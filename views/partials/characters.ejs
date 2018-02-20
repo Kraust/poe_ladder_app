@@ -1,0 +1,195 @@
+	<div><h4>Search Characters<h4></div>
+	<div class='p-2'>
+		<div class='input-group p-2'>
+			<span class="col-lg-2 col-form-label">League</span>
+			<select class="input-lg col-lg-4" id="league">
+				<% leagues.forEach(function(tmp_league){ %>
+				<option><%= tmp_league %></option>
+				<% }) %>
+			</select>
+			<span class="col-lg-2 col-form-label">Character Name</span>
+			<input class="input-lg col-lg-4" id="char_name"></input>
+
+		</div>
+		<div class='input-group p-2'>
+			<span class="col-lg-2 col-form-label">Ascendancy</span>
+			<select class="input-lg col-lg-4" id="char_class">
+				<option>All</option>
+				<% classes.forEach(function(tmp_class){ %>
+				<option><%= tmp_class %></option>
+				<% }) %>
+			</select>
+			<span class="col-lg-2 col-form-label">Account Name</span>
+			<input class="input-lg col-lg-4" id="account_name"></input>
+
+		</div>
+		<div class='input-group p-2'>
+			<span class="col-lg-2 col-form-label">Search Skills</span>
+			<input class="input-lg col-lg-4" id="search_skill"></input>
+		</div>
+		<div class='input-group p-2'>
+			<button class="btn col-lg-12" id="filter">Filter</button>
+		</div>
+	</div>
+	<div class='p-2'>
+		<div class='input-group'>
+			<button class="btn col-lg-1 float-left" id="prev_page">Previous</button>
+			<div class="col-lg-10"></div>
+			<button class="btn col-lg-1 float-right" id="next_page">Next</button>
+		</div>
+	</div>
+	<table class='table m-0'>
+	<thead><th scope='col' class='text-center'>Rank</th><th scope='col' colspan="2">Character</th><th scope='col' >Skills</th></thead>
+	<% data.forEach(function(character, index){ %>
+		<tr>
+			<td class='text-center'><%= character.rank %></td>
+			<td style="width: 5%">
+				<img src="/avatars/<%= character.class %>_avatar.png" class="rounded h-75"></img>
+			</td>
+			<td style="width: 40%">
+				<div>
+					<p class='m-0'><%= character.account_name %> - <a href='https://www.pathofexile.com/account/view-profile/<%= character.account_name %>/characters?characterName=<%= character.name %>' target='_blank' ><%= character.name %></a></p>
+					<p class='m-0'>Level <%= character.level %> <%= character.class %></p>
+					<p class='m-0'><%= character.league %> League</p>
+					<%if (character.dead) { %>
+					<p class='m-0'>DEAD</p>
+					<% } %>
+
+				</div>
+			</td>
+			<td style="width: 40%">
+				<div>
+					<% keywords[index].forEach(function(char_item) { %>
+						"<%= char_item %>" 
+					<% }) %>
+				</div>
+			</td>
+		</tr>
+	<% }) %>
+	</table>
+	<div class='p-2'>
+		<div class='input-group'>
+			<button class="btn col-lg-1 float-left" id="prev_page_2">Previous</button>
+			<div class="col-lg-10"></div>
+			<button class="btn col-lg-1 float-right" id="next_page_2">Next</button>
+		</div>
+	</div>
+
+
+	<script>
+	
+		(function() {
+			'use strict';
+
+			$("#league").val('<%= league %>');
+			$("#char_class").val('<%= char_class %>');
+			$("#char_name").val('<%= char_name %>');
+			$("#account_name").val('<%= account_name %>');
+			$("#search_skill").val('<%= search_skill %>');
+		
+			$("#filter").click(function() {
+				var league = $( "#league option:selected" ).text();
+				var char_class = $( "#char_class option:selected" ).text();
+				var char_name = $("#char_name").val();
+				var account_name = $("#account_name").val();
+				var search_skill = $("#search_skill").val();
+				
+				var to_url = "/?league=" + league;
+				to_url += "&char_class=" + char_class;
+
+				
+				if(char_name !== "") {
+					to_url += '&char_name=' + char_name;
+				}
+				
+				if(account_name !== "") {
+					to_url += '&account_name=' + account_name;
+				}
+				
+				if(search_skill !== "") {
+					to_url += '&search_skill=' + search_skill;
+				}
+								
+				window.location.href = to_url;
+			});
+			
+			$("#prev_page").click(function() {
+
+				var to_url = '/?league=<%= league %>&char_class=<%= char_class %>&start=<%= start - 10 %>';
+				
+				<%if (char_name !== "") { %>
+					if(char_name !== "") {
+						to_url += '&char_name=' + '<%= char_name %>';
+					}
+				<% } %>
+				
+				<%if (account_name !== "") { %>
+					if(account_name !== "") {
+						to_url += '&account_name=' + '<%= account_name %>';
+					}
+				<% } %>
+
+				window.location.href = to_url;
+			});
+			
+			$("#next_page").click(function() {
+
+				var to_url = '/?league=<%= league %>&char_class=<%= char_class %>&start=<%= start + 10 %>';
+				
+				<%if (char_name !== "") { %>
+					if(char_name !== "") {
+						to_url += '&char_name=' + '<%= char_name %>';
+					}
+				<% } %>
+				
+				<%if (account_name !== "") { %>
+					if(account_name !== "") {
+						to_url += '&account_name=' + '<%= account_name %>';
+					}
+				<% } %>
+				
+				window.location.href = to_url;
+			});
+
+			$("#prev_page_2").click(function() {
+
+				var to_url = '/?league=<%= league %>&char_class=<%= char_class %>&start=<%= start - 10 %>';
+				
+				<%if (char_name !== "") { %>
+					if(char_name !== "") {
+						to_url += '&char_name=' + '<%= char_name %>';
+					}
+				<% } %>
+				
+				<%if (account_name !== "") { %>
+					if(account_name !== "") {
+						to_url += '&account_name=' + '<%= account_name %>';
+					}
+				<% } %>
+
+				window.location.href = to_url;
+			});
+			
+			$("#next_page_2").click(function() {
+
+				var to_url = '/?league=<%= league %>&char_class=<%= char_class %>&start=<%= start + 10 %>';
+				
+				<%if (char_name !== "") { %>
+					if(char_name !== "") {
+						to_url += '&char_name=' + '<%= char_name %>';
+					}
+				<% } %>
+				
+				<%if (account_name !== "") { %>
+					if(account_name !== "") {
+						to_url += '&account_name=' + '<%= account_name %>';
+					}
+				<% } %>
+				
+				window.location.href = to_url;
+			});
+
+
+		})();
+
+	</script>
