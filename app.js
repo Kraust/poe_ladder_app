@@ -1,10 +1,12 @@
+const credentials = require('./credentials.js');
+
 const express = require('express');
 const { Client } = require('pg');
 const client = new Client({
-	host: 'localhost',
-	port: 5432,
-	user: 'pi',
-	password: 'raspberry',
+	host: credentials.postgres_host,
+	port: credentials.postgres_port,
+	user: credentials.postgres_user,
+	password: credentials.postgres_password,
 	database: 'poe_ladder_data'
 });
 const index = require('./routes/index');

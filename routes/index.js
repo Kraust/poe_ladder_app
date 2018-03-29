@@ -1,9 +1,11 @@
+const credentials = require('../credentials.js');
+
 const { Client } = require('pg');
 const client = new Client({
-	host: 'localhost',
-	port: 5432,
-	user: 'pi',
-	password: 'raspberry',
+	host: credentials.postgres_host,
+	port: credentials.postgres_port,
+	user: credentials.postgres_user,
+	password: credentials.postgres_password,
 	database: 'poe_ladder_data'
 });
 
@@ -68,6 +70,13 @@ exports.body = async function(req, res) {
 	var filter_characters = [];
 	var filter = false;
 	
+	var leagues = await client.query(`select * from poe_leagues`);
+	var league_list = [];
+	for(var i = 0; i < leagues.rows.length; i++)
+	{
+		league_list.push(leagues.rows[i].league_name);
+	}
+	
 	if(parseInt(req.query.start)) {
 		if(parseInt(req.query.start) < 15000 )
 		{
@@ -90,7 +99,7 @@ exports.body = async function(req, res) {
 		league = req.query.league;
 	}
 	else {
-		league = 'Abyss';
+		league = league_list[0];
 	}
 	
 	if(req.query.char_class) {
@@ -174,14 +183,6 @@ exports.body = async function(req, res) {
 		result = await client.query(searchStr);	
 	}
 	
-	//console.log(result.rows[0]._id);
-
-	var leagues = await client.query(`select * from poe_leagues`);
-	var league_list = [];
-	for(var i = 0; i < leagues.rows.length; i++)
-	{
-		league_list.push(leagues.rows[i].league_name);
-	}
 	
 	var keywords = [];
 	// Get Keywords
